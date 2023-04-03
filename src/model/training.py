@@ -9,10 +9,9 @@ import mlflow
 
 def main(args):
     mlflow.autolog()
-    
     df = get_csvs_df(args.training_data)
     X_train, X_test, y_train, y_test = split_data(df)
-	train_model(args.reg_rate, X_train, X_test, y_train, y_test)
+    train_model(args.reg_rate, X_train, X_test, y_train, y_test)
 
 
 def get_csvs_df(path):
@@ -25,9 +24,9 @@ def get_csvs_df(path):
 
 
 def split_data(data):
-	X, y = X[data.columns[:-1]], y[data.columns[-1]]
-	X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.30, random_state=0)
-	return X_train, X_test, y_train, y_test
+    X, y = X[data.columns[:-1]], y[data.columns[-1]]
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.30, random_state=0)
+    return X_train, X_test, y_train, y_test
 
 
 def train_model(reg_rate, X_train, X_test, y_train, y_test):
@@ -36,17 +35,13 @@ def train_model(reg_rate, X_train, X_test, y_train, y_test):
 
 def parse_args():
     parser = argparse.ArgumentParser()
-
-    parser.add_argument("--training_data", dest='training_data',
-                        type=str)
-    parser.add_argument("--reg_rate", dest='reg_rate',
-                        type=float, default=0.01)
+    parser.add_argument("--training_data", dest='training_data', type=str)
+    parser.add_argument("--reg_rate", dest='reg_rate', type=float, default=0.01)
     args = parser.parse_args()
-
     return args
 
 
-def run():
+if __name__ == "__main__":
     print("\n\n")
     print("*" * 60)
 
@@ -55,7 +50,3 @@ def run():
 
     print("*" * 60)
     print("\n\n")
-
-
-if __name__ == "__main__":
-	run()
