@@ -9,22 +9,23 @@ import mlflow
 
 def main(args):
     mlflow.autolog()
-    df = get_csvs_df(args.training_data)
+    df = read_data(args.training_data)
     X_train, X_test, y_train, y_test = split_data(df)
     train_model(args.reg_rate, X_train, X_test, y_train, y_test)
 
 
-def get_csvs_df(path):
+def read_data(path):
     if not os.path.exists(path):
         raise RuntimeError(f"Cannot use non-existent path provided: {path}")
-    csv_files = glob.glob(f"{path}/*.csv")
-    if not csv_files:
-        raise RuntimeError(f"No CSV files found in provided data path: {path}")
-    return pd.concat((pd.read_csv(f) for f in csv_files), sort=False)
+    try:
+        df = pd.read_csv(path)
+    except Exception as ex:
+        mlflow.set_tag("exception", str(ex))
+    return df
 
 
 def split_data(data):
-    X, y = X[data.columns[:-1]], y[data.columns[-1]]
+    X, y = data.loc[:, data.columns != 'target'], data['target']
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.30, random_state=0)
     return X_train, X_test, y_train, y_test
 
