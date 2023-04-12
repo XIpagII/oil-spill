@@ -3,16 +3,14 @@ on: workflow_dispatch
 name: Azure Login Sample / Manually trigger an Azure Machine Learning job
 
 jobs:
-  build-and-deploy:
+  train-model:
     runs-on: ubuntu-latest
     steps:
+      - name: Install az ml extension
+        run: az extension add -n ml -y
       - name: Log in with Azure
         uses: azure/login@v1
         with:
           creds: '${{secrets.AZURE_CREDENTIALS}}'
-  train-model:
-    runs-on: ubuntu-latest
-    steps:
-    - name: Trigger Azure Machine Learning job
-      run: |
-        az ml job create --file src/job.yml
+      - name: Trigger Azure Machine Learning job
+        run: az ml job create --file src/job.yml
