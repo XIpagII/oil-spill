@@ -1,33 +1,18 @@
-name: Manually trigger an Azure Machine Learning job
+on: workflow_dispatch
 
-on:
-  workflow_dispatch:
-    schedule:
-      - cron: "0 0/24 * * *"
-    pull_request:
-      branches:
-        - master
-      paths:
-        - .github/workflows/manual-trigger.yml
-        - src/job.yml
-        - cli/setup.sh
-      
+name: Azure Login Sample / Manually trigger an Azure Machine Learning job
+
 jobs:
-  train:
+  build-and-deploy:
     runs-on: ubuntu-latest
     steps:
-    - name: Check out repo
-      uses: actions/checkout@main
-    - name: Install az ml extension
-      run: az extension add -n ml -y
-    - name: Azure login
-      uses: azure/login@v1
-      with:
-        creds: ${{secrets.AZURE_CREDENTIALS}}
-    - name: setup
-      run: bash setup.sh
-      working-directory: cli
-      continue-on-error: true
-    - name: run job
-      run: az ml job create --file job.yml --web --resource-group ${{secrets.AZURE_RESOURCE_GROUP}} --workspace-name ${{secrets.AZURE_WORKSPACE_NAME}}
-      working-directory: src
+      - name: Log in with Azure
+        uses: azure/login@v1
+        with:
+          creds: '${{secrets.AZURE_CREDENTIALS}}'
+  train-model:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Trigger Azure Machine Learning job
+      run: |
+        az ml job create --file src/job.yml
