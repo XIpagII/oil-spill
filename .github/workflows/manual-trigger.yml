@@ -6,7 +6,6 @@ on:
         paths:
           - .github/workflows/manual-trigger.yml
           - src/job.yml
-          - cli/setup.sh
 
 name: Manually trigger an Azure Machine Learning job
 
